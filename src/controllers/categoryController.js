@@ -36,18 +36,38 @@ module.exports.removeCategory = async function(req, res) {
 }
 
 //Создать категорию
-module.exports.createCategory = function(req, res) {
-    try {
+module.exports.createCategory = async function(req, res) {
+    const category = new Category({
+        name: req.body.name,
+        user: req.user.id,
+        imageSrc: req.file ? req.file.path : ''
+    })
 
+    try {
+        await category.save()
+        res.status(201).json(category)
     } catch (e) {
         errorHandler(res, e)
     }
 }
 
 //Обновить категорию
-module.exports.updateCategory = function(req, res) {
-    try {
+module.exports.updateCategory = async function(req, res) {
+    const updated = {
+        name: req.body.name
+    }
 
+    if (req.file) {
+        updated.imageSrc = req.file.path
+    }
+
+    try {
+        const category = await Category.findOneAndUpdate(
+            {_id: req.params.id},
+            {$set: updated},
+            {new: true}
+        )
+        res.status(200).json(category)
     } catch (e) {
         errorHandler(res, e)
     }
