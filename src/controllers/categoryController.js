@@ -1,34 +1,54 @@
+const Category = require('../models/Category');
+const Position = require('../models/Position');
+const errorHandler = require('../utils/errorHandler');
+
 //Получить все категории
-module.exports.getAllCategories = (req, res) => {
-    res.status(200).json({
-        login: true
-    })
+module.exports.getAllCategories = async function(req, res) {
+    try {
+        const categories = await Category.find({user: req.user.id})
+        res.status(200).json(categories)
+    } catch (e) {
+        errorHandler(res, e)
+    }
 }
 
 //Получить отдельную категорию по ID
-module.exports.getCategoryById = (req, res) => {
-    res.status(200).json({
-        register: 'from controller'
-    })
-}
-
-//Создать категорию
-module.exports.createCategory = (req, res) => {
-    res.status(200).json({
-        register: 'from controller'
-    })
-}
-
-//Обновить категорию
-module.exports.updateCategory = (req, res) => {
-    res.status(200).json({
-        register: 'from controller'
-    })
+module.exports.getCategoryById = async function(req, res) {
+    try {
+        const category = await Category.findById(req.params.id)
+        res.status(200).json(category)
+    } catch (e) {
+        errorHandler(res, e)
+    }
 }
 
 //Удалить категорию
-module.exports.removeCategory = (req, res) => {
-    res.status(200).json({
-        register: 'from controller'
-    })
+module.exports.removeCategory = async function(req, res) {
+    try {
+        await Category.remove({_id: req.params.id})
+        await Position.remove({category: req.params.id})
+        res.status(200).json({
+            message: 'Категория удалена.'
+        })
+    } catch (e) {
+        errorHandler(res, e)
+    }
+}
+
+//Создать категорию
+module.exports.createCategory = function(req, res) {
+    try {
+
+    } catch (e) {
+        errorHandler(res, e)
+    }
+}
+
+//Обновить категорию
+module.exports.updateCategory = function(req, res) {
+    try {
+
+    } catch (e) {
+        errorHandler(res, e)
+    }
 }
